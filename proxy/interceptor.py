@@ -17,6 +17,7 @@ class Interceptor:
 
     def chat(self, user_input):
         system_prompt = generate_system_prompt(DEFAULT_PII_TYPES)
+        print(f"{system_prompt=}")
         completion = self.client.chat.completions.create(
         model="LLaMA_CPP",
         messages=[
@@ -28,8 +29,9 @@ class Interceptor:
     
     def request(self, flow):
         self.request_store[flow.request.host] = flow.request.content
-        self.chat("Test input")
-        flow.request.set_text(json.dumps({"Hello": "Eden"}))
+        print(f'making call {flow.request.text=}')
+        intercept = self.chat("Contact Julia Roberts at 1876 543 7652. Her SSN is 234-56-7829")
+        flow.request.set_text(json.dumps({"Hello": f"{intercept=}"}))
 
     def run_tests(self):
         test_cases = [
