@@ -160,7 +160,7 @@ DEFAULT_PII_TYPES = [
     PIIType.DEVELOPER_API_KEY
 ]
 
-def generate_system_prompt(selected_pii_types=DEFAULT_PII_TYPES):
+def generate_system_prompt(selected_pii_types=DEFAULT_PII_TYPES, content_type="application/json"):
     detection_and_replacement = [
         f'   - **{pii.value}**: Detect by {PII_RULES[pii]["detection"]}.\n'
         f'     Replace with {PII_RULES[pii]["replacement"]}. Example: {PII_RULES[pii]["example"]}.\n'
@@ -180,12 +180,21 @@ You are an AI specialized in detecting and obscuring Personal Identifiable Infor
 1. **Implicitly Detect PII**:
 {''.join(detection_and_replacement)}
 
-2. **Obscure the Detected PII** with randomized or default values that closely match the format to pass validation, but not verification:
+2. **Obscure the Detected PII** with randomized or default values that closely match the format to pass validation, but not verification. ONLY DO SO FOR ANY FIELDS PRESENT AND DO NOT ADD ANY OTHER FIELDS NOT PRESENT IN THE ORIGINAL REQUEST:
 {''.join(detection_and_replacement)}
 
-3. **Respond in JSON format**:
+""" + preserve_content_type(content_type)
+
+def preserve_content_type(content_type: str):
+    if content_type == "application/json":
+        return """3. **Respond in JSON format**:
    ```json
-   {{
+   {
 {json_response}
-   }}
+   }
+"""
+    elif content_type =="text/plain":
+        return """3. **Respond in PLAIN TEXT format ONLY**:
+    ```text
+{ text_response }
 """
