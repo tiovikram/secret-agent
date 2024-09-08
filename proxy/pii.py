@@ -15,6 +15,12 @@ class PIIType(str, Enum):
     LOGIN_CREDENTIALS = "Login Credentials"
     BIOMETRIC_DATA = "Biometric Data"
     DATE_OF_BIRTH = "Date of Birth"
+    DEVELOPER_API_KEY = "Developer API Key"
+    OAUTH_TOKEN = "OAuth Token"
+    GITHUB_TOKEN = "GitHub Token"
+    AWS_ACCESS_KEY = "AWS Access Key"
+    GOOGLE_API_KEY = "Google API Key"
+    STRIPE_API_KEY = "Stripe API Key"
 
     def __str__(self):
         return self.value
@@ -89,7 +95,52 @@ PII_RULES = {
         "detection": "Date patterns (e.g., `MM/DD/YYYY` or `YYYY-MM-DD`)",
         "replacement": "01/01/1900",
         "example": "12/31/2000"
-    }
+    },
+    PIIType.DEVELOPER_API_KEY: {
+        "detection": "Alphanumeric patterns, often 32 characters long",
+        "replacement": "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "example": "sk-abcdefghijklmnopqrstuvwxyz0123456789ABCDEF"
+    },
+     PIIType.API_KEY: {
+        "detection": "Alphanumeric strings with specific prefixes or patterns (e.g., 'api_', 'key_')",
+        "replacement": "API_KEY_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "example": "api_1234567890abcdef"
+    },
+    PIIType.ACCESS_TOKEN: {
+        "detection": "Long alphanumeric strings, often with hyphens or underscores",
+        "replacement": "ACCESS_TOKEN_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "example": "ghp_1234567890abcdef1234567890abcdef12345678"
+    },
+    PIIType.JWT: {
+        "detection": "Three base64-encoded strings separated by dots",
+        "replacement": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    },
+    PIIType.OAUTH_TOKEN: {
+        "detection": "Alphanumeric strings often starting with 'ya29.' or other specific prefixes",
+        "replacement": "ya29.OAUTH_TOKEN_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "example": "ya29.a0AfH6SMBx8XzXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    },
+    PIIType.GITHUB_TOKEN: {
+        "detection": "Alphanumeric strings starting with 'ghp_', 'gho_', 'ghu_', or 'ghs_'",
+        "replacement": "ghp_GITHUB_TOKEN_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "example": "ghp_1234567890abcdef1234567890abcdef12345678"
+    },
+    PIIType.AWS_ACCESS_KEY: {
+        "detection": "20-character alphanumeric strings often starting with 'AKIA'",
+        "replacement": "AKIAXXXXXXXXXXXXXXXXXXXXXXXX",
+        "example": "AKIAIOSFODNN7EXAMPLE"
+    },
+    PIIType.GOOGLE_API_KEY: {
+        "detection": "Alphanumeric strings often starting with 'AIza'",
+        "replacement": "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "example": "AIzaSyDrQ9efsQZYbDgfNPMLQq8e_yfXQhYYqCk"
+    },
+    PIIType.STRIPE_API_KEY: {
+        "detection": "Alphanumeric strings starting with 'sk_live_' or 'pk_live_'",
+        "replacement": "sk_live_STRIPE_API_KEY_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "example": "sk_live_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
 }
 
 DEFAULT_PII_TYPES = [
@@ -105,7 +156,8 @@ DEFAULT_PII_TYPES = [
     PIIType.IP_ADDRESS,
     PIIType.LOGIN_CREDENTIALS,
     PIIType.BIOMETRIC_DATA,
-    PIIType.DATE_OF_BIRTH
+    PIIType.DATE_OF_BIRTH,
+    PIIType.DEVELOPER_API_KEY
 ]
 
 def generate_system_prompt(selected_pii_types=DEFAULT_PII_TYPES):
