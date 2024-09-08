@@ -41,7 +41,8 @@ class Interceptor:
                     "content": request_content,
                 },
             ],
-            model="llama-3.1-8b-instant"
+            # model="llama-3.1-8b-instant"
+            model="LLaMA_CPP",
         )
         self.request_store[flow.request.host] = flow.request.content
         flow.request.headers["Origin"] = "http://localhost:8080"
